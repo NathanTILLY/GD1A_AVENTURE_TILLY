@@ -11,7 +11,7 @@ export default class Lore extends Phaser.Scene {
     create()
 	{
         this.entryDungeon = false;
-        this.attack = false;
+        this.attack = true;
         this.life = 3;
         this.add.image(0, 0, 'Lore').setOrigin(0).setDepth(0);
 
