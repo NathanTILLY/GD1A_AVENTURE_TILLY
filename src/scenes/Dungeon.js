@@ -321,17 +321,17 @@ export default class Dungeon extends Phaser.Scene
            var coefDirx = 0;
            var coefDiry = 0;
              peutAttaquer = false;
-             this.time.addEvent({delay: 300, callback: function(){peutAttaquer= true;}, callbackScope: this}); 
-	         if (this.player.direction == 'left') { coefDirx = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordL')} 
-             else if(this.player.direction == 'right') { coefDirx = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordR')} 
+             this.time.addEvent({delay: 100, callback: function(){peutAttaquer= true;}, callbackScope: this}); 
+	         if (this.player.direction == 'left') { coefDirx = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordL').setScale(1.25)} 
+             else if(this.player.direction == 'right') { coefDirx = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordR').setScale(1.25)} 
 			 else{coefDirx = 0}
 
-             if(this.player.direction == 'up') { coefDiry = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordU')} 
-             else if(this.player.direction == 'down') { coefDiry = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordD')} 
+             if(this.player.direction == 'up') { coefDiry = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordU').setScale(1.25)} 
+             else if(this.player.direction == 'down') { coefDiry = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordD').setScale(1.25)} 
 			 else{coefDiry = 0}
 
              
-			 this.time.addEvent({delay: 300, callback: function(){sword.destroy()}, callbackScope: this});
+			 this.time.addEvent({delay: 100, callback: function(){sword.destroy()}, callbackScope: this});
         }
     }
     killPhantom(sword, phantoms)

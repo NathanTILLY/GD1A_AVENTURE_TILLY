@@ -300,7 +300,7 @@ export default class Game extends Phaser.Scene
 	}
     getSword(player, sword){
         this.attack = true; 
-        this.time.addEvent({delay: 300, callback: function(){sword.destroy()}, callbackScope: this});;
+        this.time.addEvent({delay: 100, callback: function(){sword.destroy()}, callbackScope: this});;
         
     }
     attaquer(player) {
