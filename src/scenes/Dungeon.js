@@ -1,5 +1,6 @@
 import Phaser from '../lib/phaser.js'
 
+import Phantom from '../jeu/Phantom.js '
 export default class Dungeon extends Phaser.Scene
 {
     constructor()
@@ -20,18 +21,23 @@ export default class Dungeon extends Phaser.Scene
     {
 
 
-        this.load.image('Tileset', 'assets/Serene_Village_32x32.png');
+        this.load.image('TilesetMaudit', 'assets/Serene_Village_Maudit_32x32.png');
 
-        this.load.tilemapTiledJSON('Map', 'ZeldaLike.json');
+        this.load.tilemapTiledJSON('MapMaudit', 'Dungeon.json');
 
         this.load.image('Pdv', 'assets/Pdv.png');
         this.load.image('PdvPerdu', 'assets/PdvPerdu.png');
         this.load.image('MonstreBleu', 'assets/monstres/monstreBleu.png');
+        this.load.spritesheet('phantom', 'assets/monstres/monstrePhantom.png', { frameWidth: 22, frameHeight: 26 });
         this.load.image('swordD', 'assets/sword/swordD.png');
         this.load.image('swordL', 'assets/sword/swordL.png');
         this.load.image('swordR', 'assets/sword/swordR.png');
         this.load.image('swordU', 'assets/sword/swordU.png');
         this.load.image('Thune','assets/Argent.png')
+
+        this.load.image('bordure2','assets/Bordure2.png')
+
+        this.load.image('TP','assets/teleporter.png')
 
         this.load.image('sword','assets/Pdv.png')
         
@@ -45,8 +51,9 @@ export default class Dungeon extends Phaser.Scene
 
     create ()
     {
+        this.entryDungeon = true
         this.immunity = true
-        this.life = 3
+        
         //Vie
         if (this.life == 3){
 			this.pdv1 = this.add.image(40,50,'Pdv').setScale(2).setScrollFactor(0).setDepth(3);
@@ -65,33 +72,48 @@ export default class Dungeon extends Phaser.Scene
             this.pdvDead = this.add.image(165,45,'PdvPerdu').setScale(2).setScrollFactor(0).setDepth(3);
 		}
 
-        let Village = this.make.tilemap({key:'Map'});
+        //MAP
 
-        let Terrain = Village.addTilesetImage('Serene_Village_32x32','Tileset');
+        let Village = this.make.tilemap({key:'MapMaudit'});
+
+        let Terrain = Village.addTilesetImage('Serene_Village_Maudit_32x32','TilesetMaudit');
 
         let Background = Village.createLayer('Background', Terrain, 0, 0).setDepth(-2);
-        let Layer1 = Village.createLayer('ElemDecor', Terrain, 0, 0).setDepth(-1);
+        let Layer1 = Village.createLayer('ElemDecor2', Terrain, 0, 0).setDepth(-1);
+        let Layer2 = Village.createLayer('ElemDecor', Terrain, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //--COLLIDER------------------------------------------------------------------------------------------------------------------------------------- 
-        //---------------------------------------------------------------------- MONSTER----------------------------------------------------------------------
-        this.monster = this.physics.add.sprite(544,480,'MonstreBleu').setDepth(0);
-		this.monster1 = this.physics.add.sprite(1728,640,'MonstreBleu').setDepth(0);
-		this.monster2 = this.physics.add.sprite(1152,928,'MonstreBleu').setDepth(0);
+ 
 
         //---------------------------------------------------------------------- PLAYER ----------------------------------------------------------------------
             
-            this.player = this.physics.add.sprite(200, 1900, 'chevalier');
+            this.player = this.physics.add.sprite(1130, 1100, 'chevalier');
+            
             this.player.direction = 'right';
             this.player.setBounce(0);
             this.player.setCollideWorldBounds(true);
 
             this.physics.add.collider(this.player, Background);
 
-            Background.setCollisionByProperty({collides:true});
+            Background.setCollisionByProperty({collide:true});
+
+            this.gameborder = this.physics.add.staticGroup();
+            this.teleporter = this.physics.add.staticGroup();
+		    this.gameborder.create(1130,1150,'bordure2').setDepth(0);
+            this.teleporter.create(1116,595,'TP').setDepth(0);
+
+            this.physics.add.collider(this.player, this.teleporter, this.YouWin, null, this);
+
+            this.physics.add.collider(this.player, this.gameborder, this.warpingPlayerToGame, null, this);
         //---------------------------------------------------------------------- LE RESTE -------------------------------------------------------------------
             this.Argents = this.physics.add.group();
             this.sword = this.physics.add.group();
+            this.phantoms = this.physics.add.group();
+
+            new Phantom(this,500,1028,'phantom').setScale(3).setDepth(0);
+            new Phantom(this,1728,140,'phantom').setScale(3).setDepth(0);
+            new Phantom(this,1452,728,'phantom').setScale(3).setDepth(0);
         //---------------------------------------------------------------------- ANIMS ----------------------------------------------------------------------   
             
             this.anims.create({
@@ -153,14 +175,22 @@ export default class Dungeon extends Phaser.Scene
             this.physics.add.collider(this.player, Layer1);
             
             Layer1.setCollisionByProperty({collide:true});
+
+            this.physics.add.collider(this.player, Layer2);
+
+            Layer2.setCollisionByProperty({collide:true});
+
+            this.physics.add.collider(this.phantoms, Layer1);
+            
+            Layer1.setCollisionByProperty({collide:true});
+
+            this.physics.add.collider(this.phantoms, Layer2);
+            
+            Layer2.setCollisionByProperty({collide:true});
     
             //Overlaps
-            this.physics.add.overlap(this.player, this.monster, this.hitEnnemy, null, this);
-            this.physics.add.overlap(this.player, this.monster1, this.hitEnnemy, null, this);
-            this.physics.add.overlap(this.player, this.monster2, this.hitEnnemy, null, this);
-            this.physics.add.overlap(this.sword, this.monster1, this.killMonster, null,this);
-            this.physics.add.overlap(this.sword, this.monster2, this.killMonster, null,this);
-            this.physics.add.overlap(this.sword, this.monster, this.killMonster, null,this);
+            this.physics.add.overlap(this.player, this.phantoms, this.hitPhantom, null, this);
+            this.physics.add.overlap(this.sword, this.phantoms, this.killPhantom, null,this);
             this.physics.add.overlap(this.player, this.Argents, this.ARGENT, null,this);
             
     /*sert à highlight les htiboxes
@@ -268,10 +298,22 @@ export default class Dungeon extends Phaser.Scene
 			this.player.setVelocity(0)
 			this.attaquer(this.player);
 		}
+        for(var i = 0; i < this.phantoms.getChildren().length; i++){
+            var phantom = this.phantoms.getChildren()[i];
 
+            phantom.movement(this.player);
+          
+        }
         
 
     }
+
+    warpingPlayerToGame(){
+		this.scene.start('game', { health:this.life, attack:this.attack, entryDungeon:this.entryDungeon})
+	}
+    YouWin(){
+		this.scene.start('win', { health:this.life, attack:this.attack, entryDungeon:this.entryDungeon})
+	}
     attaquer(player) {
 		var peutAttaquer = true
         if (peutAttaquer)
@@ -292,17 +334,17 @@ export default class Dungeon extends Phaser.Scene
 			 this.time.addEvent({delay: 300, callback: function(){sword.destroy()}, callbackScope: this});
         }
     }
-    killMonster(sword, monstres)
+    killPhantom(sword, phantoms)
     {
 		sword.destroy();
-		monstres.destroy();
-    	var argent = this.Argents.create(monstres.x,monstres.y,'Thune')
+		phantoms.destroy();
+    	var argent = this.Argents.create(phantoms.x,phantoms.y,'Thune')
     }
     ARGENT(player, argent)
     {
         argent.destroy();
     }
-    hitEnnemy(){
+    hitPhantom(){
 		if (this.immunity){
 			this.life -= 1;
 			this.immunity = false;

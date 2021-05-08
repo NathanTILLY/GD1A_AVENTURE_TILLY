@@ -1,10 +1,10 @@
 import Phaser from '../lib/phaser.js'
 
-export default class GameOver extends Phaser.Scene
+export default class Win extends Phaser.Scene
 {
 	constructor()
 	{
-		super('game-over')
+		super('win')
 	}
 
 	create()
@@ -12,7 +12,7 @@ export default class GameOver extends Phaser.Scene
 		const width = this.scale.width
 		const height = this.scale.height
 
-		this.add.text(width * 0.5, height * 0.5, 'Game Over', {
+		this.add.text(width * 0.5, height * 0.5, 'You Win', {
 			fontSize: 48
 		})
 		.setOrigin(0.5)

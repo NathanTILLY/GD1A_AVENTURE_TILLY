@@ -7,6 +7,7 @@ export default class Game extends Phaser.Scene
         super('game');
     }
     init(data){
+        this.entryDungeon = data.entryDungeon
 		this.attack = data.attack
 		this.life = data.health
 	}
@@ -33,6 +34,8 @@ export default class Game extends Phaser.Scene
         this.load.image('swordU', 'assets/sword/swordU.png');
         this.load.image('Thune','assets/Argent.png')
 
+        this.load.image('bordure','assets/Bordure.png')
+
         this.load.image('sword','assets/Pdv.png')
         
         this.load.spritesheet('monstrePhantom', 'assets/monstres/monstrePhantom.png', { frameWidth: 22, frameHeight: 26 }); 
@@ -45,8 +48,9 @@ export default class Game extends Phaser.Scene
 
     create ()
     {
+       
         this.immunity = true
-        this.life = 3
+        
         //Vie
         if (this.life == 3){
 			this.pdv1 = this.add.image(40,50,'Pdv').setScale(2).setScrollFactor(0).setDepth(3);
@@ -70,6 +74,7 @@ export default class Game extends Phaser.Scene
         let Terrain = Village.addTilesetImage('Serene_Village_32x32','Tileset');
 
         let Background = Village.createLayer('Background', Terrain, 0, 0).setDepth(-2);
+        let Background2 = Village.createLayer('Background2', Terrain, 0, 0).setDepth(-2);
         let Layer1 = Village.createLayer('ElemDecor', Terrain, 0, 0).setDepth(-1);
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -81,14 +86,38 @@ export default class Game extends Phaser.Scene
 
         //---------------------------------------------------------------------- PLAYER ----------------------------------------------------------------------
             
-            this.player = this.physics.add.sprite(200, 1900, 'chevalier');
+            
+            if(!this.entryDungeon)
+            {
+                this.player = this.physics.add.sprite(1130, 1100, 'chevalier');
+            }
+            else
+            {
+                this.player = this.physics.add.sprite(210, 100, 'chevalier');
+            }
+            this.sword = this.physics.add.image(1530, 64, 'sword');
             this.player.direction = 'right';
             this.player.setBounce(0);
             this.player.setCollideWorldBounds(true);
 
+            this.dungeonborder = this.physics.add.staticGroup();
+		    this.dungeonborder.create(210,32,'bordure').setDepth(0);
+
+            this.physics.add.collider(this.player, this.dungeonborder, this.warpingPlayerToDungeon, null, this);
+
             this.physics.add.collider(this.player, Background);
 
-            Background.setCollisionByProperty({collides:true});
+            Background.setCollisionByProperty({collide:false});
+
+            this.physics.add.collider(this.player, Background2);
+            
+            Background2.setCollisionByProperty({collide:false});
+
+            this.physics.add.collider(this.player, Layer1);
+            
+            Layer1.setCollisionByProperty({collide:true});
+
+            this.physics.add.collider(this.player, this.sword, this.getSword, null, this);
         //---------------------------------------------------------------------- LE RESTE -------------------------------------------------------------------
             this.Argents = this.physics.add.group();
             this.sword = this.physics.add.group();
@@ -144,15 +173,8 @@ export default class Game extends Phaser.Scene
                 frameRate: 8
             });
 
-            //Collider
-        
-            this.physics.add.collider(this.player, Background);
-        
-            Background.setCollisionByProperty({collide:true});
-    
-            this.physics.add.collider(this.player, Layer1);
+
             
-            Layer1.setCollisionByProperty({collide:true});
     
             //Overlaps
             this.physics.add.overlap(this.player, this.monster, this.hitEnnemy, null, this);
@@ -162,8 +184,9 @@ export default class Game extends Phaser.Scene
             this.physics.add.overlap(this.sword, this.monster2, this.killMonster, null,this);
             this.physics.add.overlap(this.sword, this.monster, this.killMonster, null,this);
             this.physics.add.overlap(this.player, this.Argents, this.ARGENT, null,this);
+            this.physics.add.overlap(this.player, this.sword, this.getSword, null, this);
             
-    /*sert à highlight les htiboxes
+    /*sert à highlight les hitboxes
             const debugGraphics = this.add.graphics().setAlpha(0.75);
             Background.renderDebug(debugGraphics, {
                   tileColor: null, // Color of non-colliding tiles
@@ -272,6 +295,14 @@ export default class Game extends Phaser.Scene
         
 
     }
+    warpingPlayerToDungeon(){
+		this.scene.start('dungeon', { health:this.life, attack:this.attack})
+	}
+    getSword(player, sword){
+        this.attack = true; 
+        this.time.addEvent({delay: 300, callback: function(){sword.destroy()}, callbackScope: this});;
+        
+    }
     attaquer(player) {
 		var peutAttaquer = true
         if (peutAttaquer)
@@ -280,12 +311,12 @@ export default class Game extends Phaser.Scene
            var coefDiry = 0;
              peutAttaquer = false;
              this.time.addEvent({delay: 300, callback: function(){peutAttaquer= true;}, callbackScope: this}); 
-	         if (this.player.direction == 'left') { coefDirx = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordL')} 
-             else if(this.player.direction == 'right') { coefDirx = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordR')} 
+	         if (this.player.direction == 'left') { coefDirx = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordL').setScale(1.25)} 
+             else if(this.player.direction == 'right') { coefDirx = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordR').setScale(1.25)} 
 			 else{coefDirx = 0}
 
-             if(this.player.direction == 'up') { coefDiry = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordU')} 
-             else if(this.player.direction == 'down') { coefDiry = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordD')} 
+             if(this.player.direction == 'up') { coefDiry = -1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordU').setScale(1.25)} 
+             else if(this.player.direction == 'down') { coefDiry = 1; var sword = this.sword.create(player.x + (25 * coefDirx), player.y + (25 * coefDiry), 'swordD').setScale(1.25)} 
 			 else{coefDiry = 0}
 
              
@@ -296,7 +327,7 @@ export default class Game extends Phaser.Scene
     {
 		sword.destroy();
 		monstres.destroy();
-    	var argent = this.Argents.create(monstres.x,monstres.y,'Thune')
+    	var argent = this.Argents.create(monstres.x,monstres.y,'Thune').setScale(0.5)
     }
     ARGENT(player, argent)
     {

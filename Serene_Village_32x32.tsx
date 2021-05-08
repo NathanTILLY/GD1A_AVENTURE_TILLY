@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.5" tiledversion="1.6.0" name="Serene_Village_32x32" tilewidth="32" tileheight="32" tilecount="855" columns="19">
  <image source="assets/Serene_Village_32x32.png" width="608" height="1440"/>
+ <tile id="5">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="11">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="12">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="13">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="30">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="31">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="32">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="49">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="50">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="51">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="117">
   <properties>
    <property name="collide" type="bool" value="true"/>
@@ -146,26 +196,6 @@
    <property name="collide" type="bool" value="true"/>
   </properties>
  </tile>
- <tile id="153">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="154">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="155">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="156">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
  <tile id="157">
   <properties>
    <property name="collide" type="bool" value="true"/>
@@ -237,26 +267,6 @@
   </properties>
  </tile>
  <tile id="171">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="172">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="173">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="174">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="175">
   <properties>
    <property name="collide" type="bool" value="true"/>
   </properties>
@@ -337,16 +347,6 @@
   </properties>
  </tile>
  <tile id="191">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="192">
-  <properties>
-   <property name="collide" type="bool" value="true"/>
-  </properties>
- </tile>
- <tile id="193">
   <properties>
    <property name="collide" type="bool" value="true"/>
   </properties>
@@ -628,7 +628,7 @@
  </tile>
  <tile id="249">
   <properties>
-   <property name="collide" type="bool" value="true"/>
+   <property name="collide" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="250">
@@ -723,7 +723,7 @@
  </tile>
  <tile id="268">
   <properties>
-   <property name="collide" type="bool" value="true"/>
+   <property name="collide" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="269">
