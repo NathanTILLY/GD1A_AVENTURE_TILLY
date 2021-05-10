@@ -13,12 +13,12 @@ export default class Win extends Phaser.Scene
 		const height = this.scale.height
 
 		this.add.text(width * 0.5, height * 0.5, 'You Win', {
-			fontSize: 48
+			fontSize: 58
 		})
 		.setOrigin(0.5)
 
 		this.input.keyboard.once('keydown-SPACE', () => {
-			this.scene.start('lore')
+			this.scene.start('menu')
 		})
 	}
 }

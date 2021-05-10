@@ -12,13 +12,13 @@ export default class GameOver extends Phaser.Scene
 		const width = this.scale.width
 		const height = this.scale.height
 
-		this.add.text(width * 0.5, height * 0.5, 'Game Over', {
-			fontSize: 48
+		this.add.text(width * 0.5, height * 0.5, 'You loose', {
+			fontSize: 58
 		})
 		.setOrigin(0.5)
 
 		this.input.keyboard.once('keydown-SPACE', () => {
-			this.scene.start('lore')
+			this.scene.start('menu')
 		})
 	}
 }
